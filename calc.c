@@ -1,15 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char* whichmonth(int month);
-int printmonth(int month, int year);
-void firstday(int first_day);
+int printmonth();
+void firstday();
 void printyear();
 int iouliano();
 int grigoriano();
 
-int daysofmonth[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
+int maxdaysofmonth[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+const char* months[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
 int main() {
     int year, month;
@@ -35,122 +34,79 @@ int main() {
     return 0;
 }
 
-// Συνάρτηση για να βρούμε το όνομα του μήνα
-const char* whichmonth(int month) {
-    switch (month) {
-        case 1: return "Jan";
-        case 2: return "Feb";
-        case 3: return "Mar";
-        case 4: return "Apr";
-        case 5: return "May";
-        case 6: return "Jun";
-        case 7: return "Jul";
-        case 8: return "Aug";
-        case 9: return "Sep";
-        case 10: return "Oct";
-        case 11: return "Nov";
-        case 12: return "Dec";
-        default: return "Invalid month"; 
-    }
-}
-
 // Συνάρτηση για να εκτυπώσουμε τον μήνα
 int printmonth(int month, int year) { 
-    int mera,typwnw, first_day;
-    const char* thismonth;
+    int mera, day;
     int meres_mhna[12][31];
 
-    for (int i = 0; i < 12; i++) { // Loop over months (0 to 11)
-        for (int j = 0; j < daysofmonth[i]; j++) { // Loop over days in the month
-            meres_mhna[i][j] = i; // Assign the month index to each day
+    for (int i = 0; i < 12; i++) { // Επανάληψη για τους μήνες (0 έως 11)
+        for (int j = 0; j < maxdaysofmonth[i]; j++) { // Επανάληψη για τις ημέρες του μήνα
+            meres_mhna[i][j] = j; // Ανάθεση του δείκτη του μήνα σε κάθε ημέρα
         }
     }
 
-    thismonth = whichmonth(month);
+    
+    printf("         %s         \n", months[month - 1]);
+    printf("Su Mo Tu We Th Fr Sa  \n");   
+    
+    
 
-    printf("         %s\n", thismonth);
-    printf("Su Mo Tu We Th Fr Sa\n");
-
-
-    if(month == 2){ // Έλεγχος για Φεβρουάριο
-        if(year < 1752 || (year == 1752 && month < 9)){ // Ιουλιανό ημερολόγιο
-            if(year % 4 == 0 && year % 100 != 0)
-                daysofmonth[1] = 29;
-            else
-                daysofmonth[1] = 28;
-        } else {  // Γρηγοριανό ημερολόγιο
-            if((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) 
-                daysofmonth[1] = 29;
-            else 
-                daysofmonth[1] = 28; 
+    if (month == 2) { // Έλεγχος για Φεβρουάριο
+        if (year < 1752 || (year == 1752 && month < 9)) { // Ιουλιανό ημερολόγιο
+            maxdaysofmonth[1] = (year % 4 == 0 && year % 100 != 0) ? 29 : 28;
+        } else { // Γρηγοριανό ημερολόγιο
+            maxdaysofmonth[1] = ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) ? 29 : 28;
         }
     }
 
     if(month == 9 && year == 1752){ //Για να μην κάνουμε πιο περίπλοκο το προγραμμα στην περίπτωση που είναι ο μήνας αλλαγής θα τυπώνεται κατεθείαν
         printf("       1  2 14 15 16\n17 18 19 20 21 22 23\n24 25 26 27 28 29 30\n");
-        exit(1);
+        goto september;
     }
     // Υπολογισμός της πρώτης ημέρας του μήνα
     if (year < 1752 || (year == 1752 && month < 9)) { 
-        first_day = iouliano(1, month, year); // Ιουλιανό ημερολόγιο
+        day = iouliano(1, month, year); // Ιουλιανό ημερολόγιο
     } else {
-        first_day = grigoriano(1, month, year); // Γρηγοριανό ημερολόγιο
+        day = grigoriano(1, month, year); // Γρηγοριανό ημερολόγιο
     }
 
-    firstday(first_day); // Εκτυπώνει την πρώτη μέρα του μήνα
+    firstday(day); // Εκτυπώνει την πρώτη μέρα του μήνα
 
     //υπόλοιπες ημέρες του μήνα
-        for (int i = 2; i <= 9; i++) { 
-            int day_of_week = (year < 1752 || (year == 1752 && month < 9)) ? iouliano(i - 1, month, year) : grigoriano(i - 1, month, year);
-            if (day_of_week == 6) {
-                printf("  %d\n", i);
-            } else {
-                if (day_of_week != 0) {
-                    printf("  %d", i); 
-                } else {
-                    printf(" %d", i); // Όταν είναι Κυριακή
-                }
-            }
-        }
+    for (int i = 2; i <= maxdaysofmonth[month - 1]; i++) {  // Λούπα για τις ημέρες του μήνα
 
-    for (int i = 10; i <= daysofmonth[month]; i++) {
-    int day_of_week = (year < 1752 || (year == 1752 && month < 9)) ? iouliano(i - 1, month, year) : grigoriano(i - 1, month, year);
-
-        if (day_of_week == 6) {
-            printf(" %d\n", i); // Αλλαγή γραμμής μετά το Σάββατο
+        if (day == 6) {  // Αν είναι Σάββατο
+            printf("%2d\n", i);  // Εκτύπωση της ημέρας και μετά νέα γραμμή (για νέα εβδομάδα)
+            day = 0;  // Επαναφορά της ημέρας σε Κυριακή μετά το Σάββατο
         } else {
-            if (day_of_week != 0) {
-                printf(" %d", i); // Κανονική εκτύπωση για μέρες εκτός Κυριακής και Σαββάτου
-            } else {
-                printf("%d", i); // Όταν είναι Κυριακή
-            }
+            printf("%2d ", i);  // Εκτύπωση της ημέρας με κενό
+            day++;  // Αύξηση της ημέρας για την επόμενη
         }
     }
+
     printf("\n");
+    september:
 }
 
-
-
-// Συνάρτηση για να εκτυπώνουμε την πρώτη μέρα του μήνα
-void firstday(int first_day) {
+void firstday(int first_day) { // Συνάρτηση για να εκτυπώνουμε την πρώτη μέρα του μήνα
     switch (first_day) {
         case 1: // Κυριακή
-            printf(" 1");
+            printf(" 1 ");
             break;
         case 2: // Δευτέρα
-            printf("    1");
+            printf("    1 ");
             break;
         case 3: // Τρίτη
-            printf("       1");
+            printf("       1 ");
             break;
         case 4: // Τετάρτη
-            printf("          1");
+            printf("          1 ");
             break;
         case 5: // Πέμπτη
-            printf("             1");
+            printf("             1 ");
             break;
         case 6: // Παρασκευή
-            printf("                1");
+            printf("                1 ");
             break;
         case 0: // Σάββατο
             printf("                   1\n");
@@ -172,20 +128,42 @@ int iouliano(int day, int month, int year) {
     return dayOfWeek;  
 }
 
-
 int grigoriano(int day, int month, int year) {
     if (month < 3) {  
         month += 12;
         year -= 1;
-    }
+    } 
     
     return (day + (13 * (month + 1)) / 5 + year + (year / 4) - (year / 100) + (year / 400)) % 7;
 }
 
-
 void printyear(int year) {
-    for (int month = 1; month <= 12; month++) {
-        
-        
+    int month;
+    int day;
+    for (month = 1; month <= 12; month++) {
+        if (month == 1 || month == 4 || month == 7 || month == 10) { 
+            // Υπολογισμός της πρώτης ημέρας του μήνα
+            if (year < 1752 || (year == 1752 && month < 9)) { 
+                day = iouliano(1, month, year); // Ιουλιανό ημερολόγιο
+            } else {
+                day = grigoriano(1, month, year); // Γρηγοριανό ημερολόγιο
+            }
+            
+            // Εκτύπωση 3 μηνών ανά γραμμή
+            if (month == 1 || month == 4 || month == 7 || month == 10) {
+                if (month > 1) printf("\n"); // Προσθήκη νέας γραμμής πριν από κάθε σειρά 3 μηνών
+
+                // Εκτύπωση των 3 μηνών
+                printf("         %s                    %s                    %s           \n", 
+                       months[month - 1], months[month], months[month + 1]);
+                printf("Su Mo Tu We Th Fr Sa  Su Mo Tu We Th Fr Sa  Su Mo Tu We Th Fr Sa  \n");
+
+                // Τώρα εκτυπώνουμε τις ημέρες του μήνα
+                for (int i = 0; i < maxdaysofmonth[month - 1]; i++) {
+                    // Ρύθμιση της λογικής για εκτύπωση των ημερών του μήνα
+                    // Εδώ μπορείς να προσθέσεις την εκτύπωση των ημερών
+                }
+            }
+        }
     }
 }
