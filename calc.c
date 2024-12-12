@@ -8,6 +8,8 @@ void printyear();
 int iouliano();
 int grigoriano();
 
+int daysofmonth[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
 
 int main() {
     int year, month;
@@ -54,31 +56,34 @@ const char* whichmonth(int month) {
 
 // Συνάρτηση για να εκτυπώσουμε τον μήνα
 int printmonth(int month, int year) { 
-    int mera, meres_mhna = 30, typwnw, first_day;
+    int mera,typwnw, first_day;
     const char* thismonth;
+    int meres_mhna[12][31];
+
+    for (int i = 0; i < 12; i++) { // Loop over months (0 to 11)
+        for (int j = 0; j < daysofmonth[i]; j++) { // Loop over days in the month
+            meres_mhna[i][j] = i; // Assign the month index to each day
+        }
+    }
 
     thismonth = whichmonth(month);
 
     printf("         %s\n", thismonth);
     printf("Su Mo Tu We Th Fr Sa\n");
 
-    // 30 ή 31 ημέρες
-    if(month == 4 || month == 6 || month == 9 || month == 11)
-        meres_mhna = 30;
-    else if(month == 2){ // Έλεγχος για Φεβρουάριο
+
+    if(month == 2){ // Έλεγχος για Φεβρουάριο
         if(year < 1752 || (year == 1752 && month < 9)){ // Ιουλιανό ημερολόγιο
             if(year % 4 == 0 && year % 100 != 0)
-                meres_mhna = 29;
+                daysofmonth[1] = 29;
             else
-                meres_mhna = 28;
+                daysofmonth[1] = 28;
         } else {  // Γρηγοριανό ημερολόγιο
             if((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) 
-                meres_mhna = 29;
+                daysofmonth[1] = 29;
             else 
-                meres_mhna = 28; 
+                daysofmonth[1] = 28; 
         }
-    } else {
-        meres_mhna = 31;
     }
 
     if(month == 9 && year == 1752){ //Για να μην κάνουμε πιο περίπλοκο το προγραμμα στην περίπτωση που είναι ο μήνας αλλαγής θα τυπώνεται κατεθείαν
@@ -97,7 +102,6 @@ int printmonth(int month, int year) {
     //υπόλοιπες ημέρες του μήνα
         for (int i = 2; i <= 9; i++) { 
             int day_of_week = (year < 1752 || (year == 1752 && month < 9)) ? iouliano(i - 1, month, year) : grigoriano(i - 1, month, year);
-            
             if (day_of_week == 6) {
                 printf("  %d\n", i);
             } else {
@@ -109,9 +113,9 @@ int printmonth(int month, int year) {
             }
         }
 
-    for (int i = 10; i <= meres_mhna; i++) {
+    for (int i = 10; i <= daysofmonth[month]; i++) {
     int day_of_week = (year < 1752 || (year == 1752 && month < 9)) ? iouliano(i - 1, month, year) : grigoriano(i - 1, month, year);
-    
+
         if (day_of_week == 6) {
             printf(" %d\n", i); // Αλλαγή γραμμής μετά το Σάββατο
         } else {
@@ -181,7 +185,7 @@ int grigoriano(int day, int month, int year) {
 
 void printyear(int year) {
     for (int month = 1; month <= 12; month++) {
-        printmonth(month, year);
-        printf("\n");  // Print an empty line between months for readability
+        
+        
     }
 }
