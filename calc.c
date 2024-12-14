@@ -138,22 +138,47 @@ int grigoriano(int day, int month, int year) {
 void printyear(int year) {
     int month;
     int day;
-    for (month = 1; month <= 12; month +=3){
+    int meres_mhna[12][31];
+
+    for (int i = 0; i < 12; i++) { // Επανάληψη για τους μήνες (0 έως 11)
+        for (int j = 0; j < maxdaysofmonth[i]; j++) { // Επανάληψη για τις ημέρες του μήνα
+            meres_mhna[i][j] = j; // Ανάθεση του δείκτη του μήνα σε κάθε ημέρα
+        }
+    }
+
+    for (month = 1; month <= 12; month ++){
         if (month == 1 || month == 4 || month == 7 || month == 10) { 
             
             // Εκτύπωση των 3 μηνών
             printf("         %s                    %s                    %s           \n", months[month - 1], months[month], months[month + 1]);
             printf("Su Mo Tu We Th Fr Sa  Su Mo Tu We Th Fr Sa  Su Mo Tu We Th Fr Sa  \n");
 
-            for(int i = 1; i <= 3; i++){
-                if (year < 1752 || (year == 1752 && month < 9)) { 
-                    day = iouliano(1, month, year); // Ιουλιανό ημερολόγιο
-                } else {
-                    day = grigoriano(1, month, year); // Γρηγοριανό ημερολόγιο
-                }
+            for(int i = 1; i <= 5; i++){ // τυπώνουμε ανά βδομάδα 
 
-                firstday(day); // εκτυπώνουμε την πρώρη μέρα
-            
+                if(i = 1){ //πρώτη βδομάδα η πιο σημαντική
+
+                    for(int j = 1; j <= 3; j++){
+                         // Υπολογισμός της πρώτης ημέρας του μήνα
+                        if (year < 1752 || (year == 1752 && month < 9)) { 
+                            day = iouliano(1, month, year); // Ιουλιανό ημερολόγιο
+                        } else {
+                            day = grigoriano(1, month, year); // Γρηγοριανό ημερολόγιο
+                        }
+                    
+                        firstday(day); // Εκτυπώνει την πρώτη μέρα του μήνα με τα κατάλληλα κενά
+                        while(day !=0){
+                            if(day == 6){
+                                printf("%2d  ", meres_mhna[month - 1][day]);
+                                break;
+                            }
+                            printf("%2d ", meres_mhna[month - 1][++day]);
+                        }
+                        if(j = 3)
+                            printf("\n");
+                    }
+                                        
+               }
+
             }
                    
         }
