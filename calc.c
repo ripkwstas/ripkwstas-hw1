@@ -158,7 +158,7 @@ void printyear(int year) {
             day2 = (year < 1752 || (year == 1752 && (month + 1) < 9)) ? iouliano(1, month + 1, year) : grigoriano(1, month + 1, year);
             day3 = (year < 1752 || (year == 1752 && (month + 2) < 9)) ? iouliano(1, month + 2, year) : grigoriano(1, month + 2, year);
 
-            first_day(day1);            //τυπώνουμε πρώτα την πρώτη βδομάδα που είναι και η πιο δύσκολη
+            firstday(day1);            //τυπώνουμε πρώτα την πρώτη βδομάδα που είναι και η πιο δύσκολη
             int d1 = 1; 
             int d2 = 1;
             int d3 = 1;  
@@ -172,7 +172,7 @@ void printyear(int year) {
                 }
             }
 
-            first_day(day2);
+            firstday(day2);
             for(int i = day2; i <= 6; i++){
                 if(day2 == 6){
                     printf("%2d ", meres_mhna[month + 1][d2++]);
@@ -183,7 +183,7 @@ void printyear(int year) {
                 }
             }
 
-            first_day(day3);
+            firstday(day3);
             for(int i = day3; i <= 6; i++){
                 if(day3 == 6){
                     printf("%2d ", meres_mhna[month + 2][d3++]);
