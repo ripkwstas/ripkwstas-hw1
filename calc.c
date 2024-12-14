@@ -137,7 +137,7 @@ int grigoriano(int day, int month, int year) {
 
 void printyear(int year) {
     int month;
-    int day;
+    int day, day1, day2, day3, d1, d2, d3;
     int meres_mhna[12][31];
 
     for (int i = 0; i < 12; i++) { // Επανάληψη για τους μήνες (0 έως 11)
@@ -146,41 +146,75 @@ void printyear(int year) {
         }
     }
 
-    for (month = 1; month <= 12; month ++){
-        if (month == 1 || month == 4 || month == 7 || month == 10) { 
+    for (month = 0; month < 12; month ++){
+        if (month == 0 || month == 3 || month == 6 || month == 9) { 
             
             // Εκτύπωση των 3 μηνών
-            printf("         %s                    %s                    %s           \n", months[month - 1], months[month], months[month + 1]);
-            printf("Su Mo Tu We Th Fr Sa  Su Mo Tu We Th Fr Sa  Su Mo Tu We Th Fr Sa  \n");
+            printf("         %s                     %s                     %s           \n", months[month], months[month + 1], months[month + 2]);
+            printf("Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa  \n");
 
-            for(int i = 1; i <= 5; i++){ // τυπώνουμε ανά βδομάδα 
+            // Υπολογισμός των πρώτων ημερών για τους τρεις μήνες
+            day1 = (year < 1752 || (year == 1752 && month < 9)) ? iouliano(1, month, year) : grigoriano(1, month, year);
+            day2 = (year < 1752 || (year == 1752 && (month + 1) < 9)) ? iouliano(1, month + 1, year) : grigoriano(1, month + 1, year);
+            day3 = (year < 1752 || (year == 1752 && (month + 2) < 9)) ? iouliano(1, month + 2, year) : grigoriano(1, month + 2, year);
 
-                if(i = 1){ //πρώτη βδομάδα η πιο σημαντική
-
-                    for(int j = 1; j <= 3; j++){
-                         // Υπολογισμός της πρώτης ημέρας του μήνα
-                        if (year < 1752 || (year == 1752 && month < 9)) { 
-                            day = iouliano(1, month, year); // Ιουλιανό ημερολόγιο
-                        } else {
-                            day = grigoriano(1, month, year); // Γρηγοριανό ημερολόγιο
-                        }
-                    
-                        firstday(day); // Εκτυπώνει την πρώτη μέρα του μήνα με τα κατάλληλα κενά
-                        while(day !=0){
-                            if(day == 6){
-                                printf("%2d  ", meres_mhna[month - 1][day]);
-                                break;
-                            }
-                            printf("%2d ", meres_mhna[month - 1][++day]);
-                        }
-                        if(j = 3)
-                            printf("\n");
-                    }
-                                        
-               }
-
+            first_day(day1);            //τυπώνουμε πρώτα την πρώτη βδομάδα που είναι και η πιο δύσκολη
+            int d1 = 1; 
+            int d2 = 1;
+            int d3 = 1;  
+            for(int i = day1; i <= 6; i++){
+                if(day1 == 6){
+                    printf("%2d ", meres_mhna[month][d1++]);
+                    break;
+                }else if(day1 == 0){
+                    printf("   ");
+                    break;
+                }
             }
-                   
-        }
+
+            first_day(day2);
+            for(int i = day2; i <= 6; i++){
+                if(day2 == 6){
+                    printf("%2d ", meres_mhna[month + 1][d2++]);
+                    break;
+                }else if(day2 == 0){
+                    printf("   ");
+                    break;
+                }
+            }
+
+            first_day(day3);
+            for(int i = day3; i <= 6; i++){
+                if(day3 == 6){
+                    printf("%2d ", meres_mhna[month + 2][d3++]);
+                    break;
+                }else if(day3 == 0){
+                    printf("\n");
+                    break;
+                }
+            }
+
+            //Τώρα ξεκινάμε τα εύκολα που είναι η δεύετερη βδομάδα και μετά
+            for(int i = 1; i <= 3; i++){ // αλλες 3 βδομάδες
+                for(int j = 1; j <= 3; j++)// 3 μήνες
+                    if(j == 1){
+                        for(int o = 1; o <= 7; o++){
+                            printf("%2d ", meres_mhna[month][d1++]);
+                        }
+                        printf("   ");
+                    }else if(j == 2){
+                        for(int o = 1; o <= 7; o++){
+                            printf("%2d ", meres_mhna[month + 1][d2++]);
+                        }
+                        printf("   ");
+                    }else if(j == 3){
+                        for(int o = 1; o <= 7; o++){
+                            printf("%2d ", meres_mhna[month + 2][d3++]);
+                        }
+                        printf("   ");
+                    }
+            }
+            
+        }                   
     }
 }
