@@ -132,26 +132,64 @@ int get_dow(int day, int month, int year){
 }
 
 void printyear(int year) {
-    int day1, day2, day3;
-    int d1 = 2, d2 = 2, d3 = 2;
-    int month;
+    int i, j;
+    int count = 0;
 
-    // Προσαρμογή των ημερών Φεβρουαρίου 
-    if (year < 1752 || (year == 1752 && 9 > 9)) { // Ιουλιανό ημερολόγιο
-        maxdaysofmonth[1] = (year % 4 == 0 && year % 100 != 0) ? 29 : 28;
-    } else { // Γρηγοριανό ημερολόγιο
-        maxdaysofmonth[1] = ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) ? 29 : 28;
+    int temp = year;
+    while (temp != 0) {
+        temp /= 10;
+        count++;
     }
 
-    for (month = 0; month < 12; month += 3) { // Εκτύπωση ονομάτων μηνών
-        printf("         %s                     %s                     %s           \n", months[month], months[month + 1], months[month + 2]);
-        printf("Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa   Su Mo Tu We Th Fr Sa  \n");
+    printf("%*s%d%*s\n", (65 - count) / 2, "", year, (65 - count) / 2, ""); // Εκτύπωση αριθμού έτους στο κέντρο.
 
-        // Υπολογισμός της πρώτης ημέρας κάθε μήνα
-        day1 = get_dow(1, month, year);
-        day2 = get_dow(1 ,month, year);
-        day3 = get_dow(1, month, year);
+    for (i = 0; i < 4; i++) { // 4 γραμμές.
+        printf("\n");
+
+        // Εκτύπωση ονόματος μηνών.
+        for (j = 0; j < 3; j++) {
+            int month = i * 3 + j + 1; // Υπολογισμός του μήνα.
+            printf("%12s%10s", months[month - 1], ""); // Εκτύπωση ονόματος μήνα από τον πίνακα.
+        }
+        printf("\n");
+
+        // Εκτύπωση ονόματος ημερών της εβδομάδας.
+        for (j = 0; j < 3; j++) {
+            printf("Su Mo Tu We Th Fr Sa  ");
+        }
+        printf("\n");
+
+        int day1[3], daysInMonth[3]; // Πρώτη μέρα και αριθμός ημερών για κάθε μήνα της σειράς.
+        for (j = 0; j < 3; j++) {
+            int month = i * 3 + j + 1; // Υπολογισμός του μήνα.
+            day1[j] = get_dow(1, month, year); // Υπολογισμός πρώτης ημέρας.
+            daysInMonth[j] = maxdaysofmonth[month - 1]; // Αριθμός ημερών του μήνα.
+        }
+
+        int fin[3] = {0, 0, 0}; // Έλεγχος ολοκλήρωσης μηνών.
+        for (int week = 0; !fin[0] || !fin[1] || !fin[2]; week++) {
+            for (j = 0; j < 3; j++) {
+                if (fin[j]) {
+                    printf("                   "); // Εκτύπωση κενών για ολοκληρωμένους μήνες.
+                } else {
+                    for (int day = 0; day < 7; day++) {
+                        int current_day = week * 7 + day - day1[j] + 2; // Υπολογισμός ημέρας.
+                        if (current_day > 0 && current_day <= daysInMonth[j]) {
+                            printf("%2d ", current_day);
+                        } else {
+                            printf("   ");
+                        }
+                    }
+                    if (week * 7 + 1 - day1[j] + 2 > daysInMonth[j]) {
+                        fin[j] = 1; // Ο μήνας ολοκληρώθηκε.
+                    }
+                }
+                printf(" "); // Κενά μεταξύ μηνών.
+            }
+            printf("\n");
+        }
     }
 }
+
 
 
